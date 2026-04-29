@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <!-- 針對手機端優化的 Viewport，禁止使用者縮放以防止誤觸 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>閃避吧！黑玫瑰</title>
     <style>
@@ -287,6 +288,7 @@
         <div id="boss-warning" class="hidden">⚠️ 狂粉出沒！撐住 15 秒！ ⚠️</div>
     </div>
 
+    <!-- 主選單 -->
     <div id="start-screen" class="overlay">
         <div class="title">閃避吧！黑玫瑰</div>
         <div class="menu-coins" id="menu-coins-text">粉絲硬幣: 0</div>
@@ -301,21 +303,26 @@
         <button class="btn btn-secondary" id="gallery-btn">寶箱展示櫃</button>
     </div>
 
+    <!-- 商店畫面 -->
     <div id="shop-screen" class="overlay hidden">
         <div class="title">粉絲俱樂部升級</div>
         <div class="menu-coins" id="shop-coins-text">持有硬幣: 0</div>
         <div class="cards-container gallery-container" id="shop-cards-container">
-            </div>
+            <!-- 商店項目動態產生 -->
+        </div>
         <button class="btn" id="close-shop-btn">返回</button>
     </div>
 
+    <!-- 圖鑑畫面 -->
     <div id="gallery-screen" class="overlay hidden">
         <div class="title">粉絲禮物圖鑑</div>
         <div class="cards-container gallery-container" id="gallery-cards-container">
-            </div>
+            <!-- 圖鑑動態產生 -->
+        </div>
         <button class="btn" id="close-gallery-btn">返回</button>
     </div>
 
+    <!-- 遊戲結束畫面 -->
     <div id="game-over-screen" class="overlay hidden">
         <div class="title">被情書淹沒了...</div>
         <div id="final-score">最終分數: 0</div>
@@ -323,10 +330,12 @@
         <button class="btn" id="restart-btn">返回主選單</button>
     </div>
 
+    <!-- 寶箱畫面 -->
     <div id="chest-screen" class="overlay hidden">
         <div class="title">獲得粉絲禮物！(3選1)</div>
         <div class="cards-container" id="buff-cards-container">
-            </div>
+            <!-- 卡片動態產生 -->
+        </div>
     </div>
 
     <script>
@@ -461,7 +470,7 @@
         function renderShop() {
             shopCardsContainer.innerHTML = '';
             shopItems.forEach(item => {
-                const isBought = unlockedUpgrades[item.id];
+                const isBought =Q unlockedUpgrades[item.id];
                 const card = document.createElement('div');
                 card.className = `buff-card ${isBought ? 'shop-item-bought' : ''}`;
                 card.innerHTML = `
