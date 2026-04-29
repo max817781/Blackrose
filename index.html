@@ -354,17 +354,29 @@
             document.body.appendChild(errorDiv);
         });
 
-        // --- 存檔系統 (LocalStorage) 加上嚴格的 Try-Catch 防呆機制 ---
+        // --- 存檔系統 (LocalStorage) 加上嚴格的防呆與錯誤捕捉機制 ---
         let fansCoins = parseInt(localStorage.getItem('fansCoins') || '0');
-        if (isNaN(fansCoins)) fansCoins = 0; // 防止 NaN 錯誤
+        // 防止 NaN 錯誤
+        if (isNaN(fansCoins)) {
+            fansCoins = 0;
+        }
 
-        let unlockedUpgrades;
+        let defaultUpgrades = { "hp": false, "shield": false, "chest": false };
+        let unlockedUpgrades = defaultUpgrades;
+
         try {
-            unlockedUpgrades = JSON.parse(localStorage.getItem('unlockedUpgrades') || '{"hp":false, "shield":false, "chest":false}');
+            let savedStr = localStorage.getItem('unlockedUpgrades');
+            if (savedStr) {
+                let parsed = JSON.parse(savedStr);
+                // 確保解析出來的是一個正常的物件，而不是 null 或 undefined，防止遊戲無法啟動
+                if (parsed !== null && typeof parsed === 'object') {
+                    unlockedUpgrades = Object.assign({}, defaultUpgrades, parsed);
+                }
+            }
         } catch (e) {
-            // 如果瀏覽器裡的存檔格式壞了，強制重置，避免整個網頁崩潰
+            // 如果瀏覽器裡的存檔格式完全壞了，強制重置
             console.warn("存檔資料毀損，已重置升級紀錄。");
-            unlockedUpgrades = {"hp":false, "shield":false, "chest":false};
+            unlockedUpgrades = defaultUpgrades;
         }
 
         function saveGame() {
@@ -610,7 +622,7 @@
             isOffScreen() { return this.y > canvas.height + 50; }
         }
 
-        // --- 新增：爆炸視覺特效類別 ---
+        // --- 爆炸視覺特效類別 ---
         class Explosion {
             constructor(x, y, maxRadius) {
                 this.x = x; this.y = y; this.maxRadius = maxRadius;
