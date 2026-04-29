@@ -354,9 +354,18 @@
             document.body.appendChild(errorDiv);
         });
 
-        // --- 存檔系統 (LocalStorage) ---
+        // --- 存檔系統 (LocalStorage) 加上嚴格的 Try-Catch 防呆機制 ---
         let fansCoins = parseInt(localStorage.getItem('fansCoins') || '0');
-        let unlockedUpgrades = JSON.parse(localStorage.getItem('unlockedUpgrades') || '{"hp":false, "shield":false, "chest":false}');
+        if (isNaN(fansCoins)) fansCoins = 0; // 防止 NaN 錯誤
+
+        let unlockedUpgrades;
+        try {
+            unlockedUpgrades = JSON.parse(localStorage.getItem('unlockedUpgrades') || '{"hp":false, "shield":false, "chest":false}');
+        } catch (e) {
+            // 如果瀏覽器裡的存檔格式壞了，強制重置，避免整個網頁崩潰
+            console.warn("存檔資料毀損，已重置升級紀錄。");
+            unlockedUpgrades = {"hp":false, "shield":false, "chest":false};
+        }
 
         function saveGame() {
             localStorage.setItem('fansCoins', fansCoins);
@@ -470,7 +479,7 @@
         function renderShop() {
             shopCardsContainer.innerHTML = '';
             shopItems.forEach(item => {
-                const isBought =Q unlockedUpgrades[item.id];
+                const isBought = unlockedUpgrades[item.id];
                 const card = document.createElement('div');
                 card.className = `buff-card ${isBought ? 'shop-item-bought' : ''}`;
                 card.innerHTML = `
